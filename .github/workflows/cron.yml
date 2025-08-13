@@ -1,0 +1,19 @@
+name: 'Birthday Check Cron Job'
+
+on:
+  schedule:
+    # Runs at 8:00 AM UTC every day. You can adjust this.
+    # Use https://crontab.guru to help create the schedule string.
+    - cron: '0 8 * * *'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Call Vercel Cron Job'
+        run: |
+          curl --request GET \
+          --url "https://YOUR_VERCEL_PROJECT_URL/api/cron" \
+          --header "Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}"
