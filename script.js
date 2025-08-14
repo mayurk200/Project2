@@ -1,16 +1,26 @@
 // ❗️ PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDy5N2hqGPKyigW-jUnBoSybCmqjAhYgCs",
+  authDomain: "project1-e2744.firebaseapp.com",
+  projectId: "project1-e2744",
+  storageBucket: "project1-e2744.firebasestorage.app",
+  messagingSenderId: "764586088455",
+  appId: "1:764586088455:web:baef2bb16e6d0aab65b2a2",
+  measurementId: "G-8E04FLEMH8"
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
 
 // Get DOM elements
 const form = document.getElementById('birthdayForm');
