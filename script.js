@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
-// Your web app's Firebase configuration (provided by you)
+// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyC1LPL3eOKvTu61GUkZ8qhcLcYDDpkxeAQ",
   authDomain: "project1-b1218.firebaseapp.com",
@@ -15,21 +15,43 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// Get a reference to the Firestore database service
 const db = getFirestore(app);
 
 // Get DOM elements
 const form = document.getElementById('birthdayForm');
 const statusMessage = document.getElementById('statusMessage');
 const reminderCountElement = document.getElementById('reminderCount');
+const reminderListElement = document.getElementById('reminderList'); // Get the new list element
 
 // Create a reference to the "reminders" collection
 const remindersCollection = collection(db, "reminders");
 
-// Real-time listener for the reminder count (new syntax)
+// Real-time listener to update the count AND display the reminders
 onSnapshot(remindersCollection, (snapshot) => {
-  const count = snapshot.size;
-  reminderCountElement.textContent = count;
+  // Update the total count
+  reminderCountElement.textContent = snapshot.size;
+
+  // Clear the current list of reminders
+  reminderListElement.innerHTML = '';
+
+  // Loop through each document in the database and create a list item for it
+  snapshot.docs.forEach(doc => {
+    const reminder = doc.data(); // Get the data from the document
+    const listItem = document.createElement('li'); // Create a new <li> element
+    
+    // Format the date for display (e.g., from '2025-08-15' to 'Aug 15')
+    const date = new Date(reminder.fullBirthDate + 'T00:00:00'); // Add time to avoid timezone issues
+    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+    // Set the content of the list item
+    listItem.innerHTML = `
+        <span>${reminder.name}</span>
+        <span class="date">${formattedDate}</span>
+    `;
+
+    // Add the new list item to the list on the page
+    reminderListElement.appendChild(listItem);
+  });
 });
 
 // Listen for form submission
@@ -51,7 +73,6 @@ form.addEventListener('submit', async (e) => {
     const day = dateParts[2];
 
     try {
-        // Add a new document to the collection (new syntax)
         await addDoc(remindersCollection, {
             name: name,
             email: email,
