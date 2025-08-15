@@ -1,34 +1,33 @@
-// ❗️ PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+// Import the functions you need from the Firebase SDKs
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Your web app's Firebase configuration (provided by you)
 const firebaseConfig = {
-  apiKey: "AIzaSyDy5N2hqGPKyigW-jUnBoSybCmqjAhYgCs",
-  authDomain: "project1-e2744.firebaseapp.com",
-  projectId: "project1-e2744",
-  storageBucket: "project1-e2744.firebasestorage.app",
-  messagingSenderId: "764586088455",
-  appId: "1:764586088455:web:baef2bb16e6d0aab65b2a2",
-  measurementId: "G-8E04FLEMH8"
+  apiKey: "AIzaSyC1LPL3eOKvTu61GUkZ8qhcLcYDDpkxeAQ",
+  authDomain: "project1-b1218.firebaseapp.com",
+  projectId: "project1-b1218",
+  storageBucket: "project1-b1218.appspot.com",
+  messagingSenderId: "674758599966",
+  appId: "1:674758599966:web:5fc423df781afdcd4ad50f",
+  measurementId: "G-DFJG3BWVFP"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
+// Get a reference to the Firestore database service
+const db = getFirestore(app);
 
 // Get DOM elements
 const form = document.getElementById('birthdayForm');
 const statusMessage = document.getElementById('statusMessage');
 const reminderCountElement = document.getElementById('reminderCount');
 
-// Real-time listener for the reminder count
-db.collection("reminders").onSnapshot((snapshot) => {
+// Create a reference to the "reminders" collection
+const remindersCollection = collection(db, "reminders");
+
+// Real-time listener for the reminder count (new syntax)
+onSnapshot(remindersCollection, (snapshot) => {
   const count = snapshot.size;
   reminderCountElement.textContent = count;
 });
@@ -52,7 +51,8 @@ form.addEventListener('submit', async (e) => {
     const day = dateParts[2];
 
     try {
-        await db.collection("reminders").add({
+        // Add a new document to the collection (new syntax)
+        await addDoc(remindersCollection, {
             name: name,
             email: email,
             birthMonth: month,
