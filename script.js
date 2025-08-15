@@ -1,15 +1,16 @@
-// Import the functions you need from the Firebase SDKs
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+// Import the functions you need from the Firebase SDKs (Updated to v12.1.0)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
-// Your web app's Firebase configuration
+// Your web app's Firebase configuration (as provided by you)
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyC1LPL3eOKvTu61GUkZ8qhcLcYDDpkxeAQ",
+  authDomain: "project1-b1218.firebaseapp.com",
+  projectId: "project1-b1218",
+  storageBucket: "project1-b1218.appspot.com",
+  messagingSenderId: "674758599966",
+  appId: "1:674758599966:web:5fc423df781afdcd4ad50f",
+  measurementId: "G-DFJG3BWVFP"
 };
 
 // Initialize Firebase
