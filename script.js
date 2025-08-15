@@ -2,15 +2,14 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
-// Your web app's Firebase configuration
+// ❗️ PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
 const firebaseConfig = {
-  apiKey: "AIzaSyC1LPL3eOKvTu61GUkZ8qhcLcYDDpkxeAQ",
-  authDomain: "project1-b1218.firebaseapp.com",
-  projectId: "project1-b1218",
-  storageBucket: "project1-b1218.appspot.com",
-  messagingSenderId: "674758599966",
-  appId: "1:674758599966:web:5fc423df781afdcd4ad50f",
-  measurementId: "G-DFJG3BWVFP"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 // Initialize Firebase
@@ -22,7 +21,7 @@ const form = document.getElementById('birthdayForm');
 const statusMessage = document.getElementById('statusMessage');
 const reminderCountElement = document.getElementById('reminderCount');
 const reminderListElement = document.getElementById('reminderList');
-const emptyStateMessage = document.getElementById('emptyStateMessage'); // Get the empty state element
+const emptyStateMessage = document.getElementById('emptyStateMessage');
 
 // Create a reference to the "reminders" collection and a query to sort by name
 const remindersCollection = collection(db, "reminders");
@@ -30,20 +29,15 @@ const remindersQuery = query(remindersCollection, orderBy("name"));
 
 // Real-time listener to update the count AND display the reminders
 onSnapshot(remindersQuery, (snapshot) => {
-  // Update the total count
   reminderCountElement.textContent = snapshot.size;
-
-  // Clear the current list of reminders
   reminderListElement.innerHTML = '';
 
-  // Show or hide the empty state message
   if (snapshot.empty) {
     emptyStateMessage.style.display = 'block';
   } else {
     emptyStateMessage.style.display = 'none';
   }
 
-  // Loop through each document in the database and create a list item
   snapshot.docs.forEach(doc => {
     const reminder = doc.data();
     const listItem = document.createElement('li');
@@ -67,8 +61,9 @@ form.addEventListener('submit', async (e) => {
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const birthdate = document.getElementById('birthdate').value;
+    const time = document.getElementById('time').value;
 
-    if (!name || !email || !birthdate) {
+    if (!name || !email || !birthdate || !time) {
       statusMessage.textContent = 'Please fill out all fields.';
       statusMessage.style.color = 'var(--error-color)';
       return;
@@ -77,6 +72,7 @@ form.addEventListener('submit', async (e) => {
     const dateParts = birthdate.split('-'); 
     const month = dateParts[1];
     const day = dateParts[2];
+    const hour = time.split(':')[0];
 
     try {
         await addDoc(remindersCollection, {
@@ -84,10 +80,17 @@ form.addEventListener('submit', async (e) => {
             email: email,
             birthMonth: month,
             birthDay: day,
+            reminderHour: hour,
             fullBirthDate: birthdate
         });
+        
+        fetch('/api/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email })
+        });
 
-        statusMessage.textContent = 'Reminder set successfully!';
+        statusMessage.textContent = 'Reminder set! A confirmation email has been sent.';
         statusMessage.style.color = 'var(--success-color)';
         form.reset();
         
