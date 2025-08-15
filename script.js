@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
-// ❗️ PASTE YOUR FIREBASE CONFIGURATION OBJECT HERE
+// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "YOUR_AUTH_DOMAIN",
@@ -61,9 +61,8 @@ form.addEventListener('submit', async (e) => {
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const birthdate = document.getElementById('birthdate').value;
-    const time = document.getElementById('time').value;
 
-    if (!name || !email || !birthdate || !time) {
+    if (!name || !email || !birthdate) {
       statusMessage.textContent = 'Please fill out all fields.';
       statusMessage.style.color = 'var(--error-color)';
       return;
@@ -72,7 +71,6 @@ form.addEventListener('submit', async (e) => {
     const dateParts = birthdate.split('-'); 
     const month = dateParts[1];
     const day = dateParts[2];
-    const hour = time.split(':')[0];
 
     try {
         await addDoc(remindersCollection, {
@@ -80,7 +78,6 @@ form.addEventListener('submit', async (e) => {
             email: email,
             birthMonth: month,
             birthDay: day,
-            reminderHour: hour,
             fullBirthDate: birthdate
         });
         
