@@ -2,8 +2,7 @@
 
 A full-stack, serverless web application that allows users to set birthday reminders. The application saves reminder details to a Firestore database, sends an instant confirmation email, and automatically dispatches a birthday email on the scheduled day using a daily cron job.
 
-**Live Demo:** [https://your-project-name.netlify.app](https://your-project-name.netlify.app)
-
+**Live Demo:** [[https://your-project-name.netlify.app](https://project1up.netlify.app/)]
 
 
 ---
