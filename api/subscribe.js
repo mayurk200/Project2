@@ -1,12 +1,10 @@
 const fetch = require('node-fetch');
 
-// Get credentials from Vercel's Environment Variables
 const EMAILJS_SERVICE_ID = process.env.EMAILJS_SERVICE_ID;
 const EMAILJS_SUBSCRIBE_TEMPLATE_ID = process.env.EMAILJS_SUBSCRIBE_TEMPLATE_ID;
 const EMAILJS_USER_ID = process.env.EMAILJS_USER_ID;
 
 module.exports = async (req, res) => {
-  // We only accept POST requests to this function
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
   }
