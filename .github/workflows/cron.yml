@@ -2,8 +2,8 @@ name: 'Birthday Check Cron Job'
 
 on:
   schedule:
-    # Runs at minute 0 of every hour
-    - cron: '0 * * * *'
+    # Runs at 8:00 AM UTC every day
+    - cron: '0 8 * * *'
   workflow_dispatch:
 
 jobs:
