@@ -1,6 +1,6 @@
 // Import the functions you need from the Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -21,51 +21,57 @@ const db = getFirestore(app);
 const form = document.getElementById('birthdayForm');
 const statusMessage = document.getElementById('statusMessage');
 const reminderCountElement = document.getElementById('reminderCount');
-const reminderListElement = document.getElementById('reminderList'); // Get the new list element
+const reminderListElement = document.getElementById('reminderList');
+const emptyStateMessage = document.getElementById('emptyStateMessage'); // Get the empty state element
 
-// Create a reference to the "reminders" collection
+// Create a reference to the "reminders" collection and a query to sort by name
 const remindersCollection = collection(db, "reminders");
+const remindersQuery = query(remindersCollection, orderBy("name"));
 
 // Real-time listener to update the count AND display the reminders
-onSnapshot(remindersCollection, (snapshot) => {
+onSnapshot(remindersQuery, (snapshot) => {
   // Update the total count
   reminderCountElement.textContent = snapshot.size;
 
   // Clear the current list of reminders
   reminderListElement.innerHTML = '';
 
-  // Loop through each document in the database and create a list item for it
-  snapshot.docs.forEach(doc => {
-    const reminder = doc.data(); // Get the data from the document
-    const listItem = document.createElement('li'); // Create a new <li> element
-    
-    // Format the date for display (e.g., from '2025-08-15' to 'Aug 15')
-    const date = new Date(reminder.fullBirthDate + 'T00:00:00'); // Add time to avoid timezone issues
-    const formattedDate = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  // Show or hide the empty state message
+  if (snapshot.empty) {
+    emptyStateMessage.style.display = 'block';
+  } else {
+    emptyStateMessage.style.display = 'none';
+  }
 
-    // Set the content of the list item
+  // Loop through each document in the database and create a list item
+  snapshot.docs.forEach(doc => {
+    const reminder = doc.data();
+    const listItem = document.createElement('li');
+    
+    const date = new Date(reminder.fullBirthDate + 'T00:00:00');
+    const formattedDate = date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+
     listItem.innerHTML = `
         <span>${reminder.name}</span>
         <span class="date">${formattedDate}</span>
     `;
 
-    // Add the new list item to the list on the page
     reminderListElement.appendChild(listItem);
   });
 });
 
 // Listen for form submission
 form.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
 
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const birthdate = document.getElementById('birthdate').value;
 
     if (!name || !email || !birthdate) {
-        statusMessage.textContent = 'Please fill out all fields.';
-        statusMessage.style.color = 'red';
-        return;
+      statusMessage.textContent = 'Please fill out all fields.';
+      statusMessage.style.color = 'var(--error-color)';
+      return;
     }
     
     const dateParts = birthdate.split('-'); 
@@ -82,7 +88,7 @@ form.addEventListener('submit', async (e) => {
         });
 
         statusMessage.textContent = 'Reminder set successfully!';
-        statusMessage.style.color = 'green';
+        statusMessage.style.color = 'var(--success-color)';
         form.reset();
         
         setTimeout(() => {
@@ -92,6 +98,6 @@ form.addEventListener('submit', async (e) => {
     } catch (error) {
         console.error("Error adding document: ", error);
         statusMessage.textContent = 'Error setting reminder. Please try again.';
-        statusMessage.style.color = 'red';
+        statusMessage.style.color = 'var(--error-color)';
     }
 });
