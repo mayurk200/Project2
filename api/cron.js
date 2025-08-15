@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
 const EMAILJS_SERVICE_ID = process.env.EMAILJS_SERVICE_ID;
-const EMAILJS_TEMPLATE_ID = process.env.EMAILJS_TEMPLATE_ID; // The birthday template
+const EMAILJS_TEMPLATE_ID = process.env.EMAILJS_TEMPLATE_ID;
 const EMAILJS_USER_ID = process.env.EMAILJS_USER_ID;
 
 if (!admin.apps.length) {
@@ -18,18 +18,16 @@ module.exports = async (req, res) => {
     const today = new Date();
     const month = String(today.getUTCMonth() + 1).padStart(2, '0');
     const day = String(today.getUTCDate()).padStart(2, '0');
-    const hour = String(today.getUTCHours()).padStart(2, '0');
 
-    console.log(`Checking for birthdays on: ${month}-${day} at ${hour}:00 UTC`);
+    console.log(`Checking for birthdays on: ${month}-${day}`);
 
     const snapshot = await db.collection('reminders')
       .where('birthMonth', '==', month)
-      .where('birthDay', '==', day)
-      .where('reminderHour', '==', hour)
+      '==', day)
       .get();
 
     if (snapshot.empty) {
-      return res.status(200).send('No birthdays scheduled for this hour.');
+      return res.status(200).send('No birthdays scheduled for today.');
     }
 
     const emailPromises = [];
